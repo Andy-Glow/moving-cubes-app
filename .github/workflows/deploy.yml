@@ -1,0 +1,44 @@
+# Название автоматизации, которое отобразится во вкладке Actions на GitHub
+name: Deploy Moving Cubes App to GitHub Pages
+
+# 1. Триггеры: запускаем скрипт автоматически при каждом git push в ветку main
+on:
+  push:
+    branches:
+      - main
+
+# Разрешения, чтобы сервер GitHub мог записать скомпилированные файлы в ветку хостинга
+permissions:
+  contents: write
+
+# 2. Список последовательных шагов (Jobs) для сервера GitHub
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest # Выделяем бесплатный облачный сервер на Linux
+
+    steps:
+      # Шаг 1: Скачиваем свежий код из нашего репозитория на сервер
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Шаг 2: Устанавливаем Node.js на сервере
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm" # Кешируем зависимости, чтобы деплой проходил быстрее
+
+      # Шаг 3: Устанавливаем все библиотеки проекта
+      - name: Install dependencies
+        run: npm ci # Чистая установка строго по package-lock.json
+
+      # Шаг 4: Запускаем проверку типов TypeScript и сборку Vite
+      - name: Build project
+        run: npm run build
+
+      # Шаг 5: Берем готовую папку dist и автоматически публикуем её в ветку gh-pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist # Какую папку загружать на хостинг
+          branch: gh-pages # В какую ветку складывать скомпилированные файлы
