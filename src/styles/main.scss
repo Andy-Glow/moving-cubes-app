@@ -1,0 +1,190 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #eef2f6;
+  color: #1e293b;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px; // Задаем максимальную ширину рабочей зоны
+}
+
+// Главная шапка, выстраивающая элементы на один уровень
+.controls-panel {
+  display: flex;
+  justify-content: space-between; // Расталкивает элементы по краям
+  align-items: center;
+  width: 800px; // Делаем ширину шапки равной ширине поля для строгой симметрии
+  position: relative;
+  min-height: 110px; // Фиксированная высота шапки, чтобы она не прыгала при скрытии цветов
+
+  // Невидимый распорщик слева, равный по ширине правой панели управления.
+  // Это математически гарантирует, что центральный блок будет ровно по центру поля.
+  .panel-spacer {
+    width: 180px;
+  }
+
+  // Центральный блок с названием приложения
+  .panel-title {
+    text-align: center;
+    h2 {
+      font-size: 24px;
+      margin-bottom: 4px;
+      color: #1e293b;
+    }
+    p {
+      color: #64748b;
+      font-size: 14px;
+    }
+  }
+}
+
+// Панель управления вне поля, прижатая к правому углу шапки
+.side-controls {
+  width: 180px;
+  background-color: #ffffff;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  border: 1px solid #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+// Контейнер-обертка для поля
+.field-wrapper {
+  position: relative;
+}
+
+// Стили игрового поля 800x800
+.game-field {
+  background-color: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+// Стили кубиков
+.cube {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: grab;
+  border-radius: 4px;
+  transition:
+    outline 0.2s ease,
+    background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.05);
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &.is-selected {
+    outline: 3px dashed #6366f1;
+    outline-offset: 4px;
+  }
+}
+
+// Панель выбора цвета
+.color-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
+  transition: all 0.2s ease;
+
+  &.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+
+  span {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.colors-list {
+  display: flex;
+  gap: 8px;
+}
+
+.color-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px #cbd5e1;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px #6366f1;
+  }
+}
+
+// Компонент кнопки "Разъединить"
+.disconnect-btn {
+  width: 100%;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #6366f1;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgb(99 102 241 / 0.1);
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #4f46e5;
+  }
+
+  &:disabled {
+    background-color: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}
+
+.field-flying {
+  .cube {
+    transition:
+      transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+      background-color 0.2s ease;
+  }
+}
